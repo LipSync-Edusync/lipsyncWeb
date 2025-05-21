@@ -29,7 +29,7 @@
 					description: 'Your sign in request failed. Please try again.'
 				});
 			}
-		},
+		}
 	});
 
 	const { form: formData, enhance } = form;

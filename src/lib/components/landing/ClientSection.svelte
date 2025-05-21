@@ -9,9 +9,7 @@
 <section id="clients" class="mx-auto max-w-7xl px-6 text-center md:px-8">
 	<div class="py-14">
 		<div class="mx-auto max-w-screen-xl px-4 md:px-8">
-			<h2 class="text-center text-md font-bold text-gray-600">
-				TECH STACKS
-			</h2>
+			<h2 class="text-md text-center font-bold text-gray-600">TECH STACKS</h2>
 			<div class="mt-6">
 				<ul
 					class="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:gap-x-16 [&_path]:fill-white"
