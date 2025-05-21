@@ -11,13 +11,41 @@
 	import { Loader } from 'lucide-svelte';
 	// import { enhance } from '$app/forms';
 	import { toast } from 'svelte-sonner';
+	import { supabase } from '$lib/supabaseClient';
+
+	let step = 1;
+	let email = '';
+	let otpCode = '';
+
 
 	export let data;
 	let dataForm: SuperValidated<Infer<FormSchema>> = data.form;
 	let form = superForm(dataForm, {
 		validators: zodClient(formSchema),
-		onSubmit: () => {
+		onSubmit: async ({ formData }) => {
 			isFormLoading = true;
+
+			const formEmail = formData.get('email');
+			email = formEmail as string;
+			const { error } = await supabase.auth.signInWithOtp({
+				email: email,
+				options: {
+					shouldCreateUser: false 
+				}
+			});
+
+			if (error) {
+				toast.error('Sign in failed', {
+					description: error.message
+				});
+			} else {
+				step = 2;
+				toast.success('Check your email', {
+					description: 'We sent you an OTP link. Check your inbox (and spam).'
+				});
+			}
+
+			isFormLoading = false;
 		},
 		onUpdate: ({ result }) => {
 			isFormLoading = false;
@@ -37,15 +65,39 @@
 
 	let loading = false;
 	let isFormLoading = false;
-	let githubSignIn = async () => {
+	const githubSignIn = async () => {
 		loading = true;
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' });
+		if (error) {
+			toast.error('GitHub sign-in failed', { description: error.message });
+		}
 		loading = false;
 	};
+
+	
+	async function verifyOtp() {
+		isFormLoading = true;
+
+		const { data, error } = await supabase.auth.verifyOtp({
+			email,
+			token: otpCode,
+			type: 'email'
+		});
+
+		isFormLoading = false;
+
+		if (error) {
+			toast.error('OTP verification failed', { description: error.message });
+		} else {
+			toast.success('Logged in successfully');
+			// redirect, update session, etc.
+		}
+	}
+
 </script>
 
 <svelte:head>
-	<title>Sign In | Svee UI</title>
+	<title>Sign In | Lipsync</title>
 	<meta name="description" content="Sign In for Svee UI" />
 </svelte:head>
 
@@ -54,28 +106,40 @@
 		<ChevronLeftIcon class="mr-2 size-4" />
 		Back
 	</Button>
+
+
+
+
+
 	<div class="mx-auto flex w-full flex-col justify-center gap-6 sm:w-[350px]">
 		<div class="flex flex-col gap-2 text-center">
 			<!-- {/* <Icons.logo class="mx-auto h-6 w-6" /> */} -->
 			<h1 class="text-2xl font-semibold tracking-tight">Welcome back</h1>
 			<p class="text-sm text-muted-foreground">Login to your account</p>
 		</div>
+		{#if step === 1}
 		<!-- Form -->
-		<form method="POST" use:enhance>
-			<Form.Field {form} name="email" class="mb-4">
-				<Form.Control let:attrs>
-					<Input placeholder="name@example.com" {...attrs} bind:value={$formData.email} />
-				</Form.Control>
-				<!-- <Form.Description>This is your email address.</Form.Description> -->
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Button size="sm" class="w-full" disabled={isFormLoading}>
-				{#if isFormLoading}
-					<Loader class="mr-2 size-4 animate-spin" />
-				{/if}
-				Sign In with Email</Form.Button
-			>
-		</form>
+				<form method="POST" use:enhance>
+					<Form.Field {form} name="email" class="mb-4">
+						<Form.Control let:attrs>
+							<Input placeholder="name@example.com" {...attrs} bind:value={$formData.email} />
+						</Form.Control>
+						<!-- <Form.Description>This is your email address.</Form.Description> -->
+						<Form.FieldErrors />
+					</Form.Field>
+					<Form.Button size="sm" class="w-full" disabled={isFormLoading}>
+						{#if isFormLoading}
+							<Loader class="mr-2 size-4 animate-spin" />
+						{/if}
+						Sign In with Email</Form.Button
+					>
+				</form>
+			{:else if step === 2}
+				<form on:submit|preventDefault={verifyOtp}>
+					<input bind:value={otpCode} type="text" placeholder="Enter OTP" required />
+					<Button type="submit" disabled={isFormLoading}>Verify OTP</Button>
+				</form>
+		{/if}
 		<!-- Separator -->
 		<div class="relative">
 			<div class="absolute inset-0 flex items-center">

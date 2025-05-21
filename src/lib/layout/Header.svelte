@@ -3,6 +3,19 @@
 	import { cn } from '$lib/utils';
 	import { AlignJustify, XIcon } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
+	import { page } from '$app/stores';
+	
+	const navItems = [
+		{ label: 'Features', href: '/features' },
+		{ label: 'Pricing', href: '/pricing' },
+		{ label: 'Careers', href: '/careers' },
+		{ label: 'Contact Us', href: '/contact' }
+	];
+
+	const authItems = [
+		{ label: 'Log in', href: '/signin' },
+		{ label: 'Sign up', href: '/signup' }
+	];
 
 	const menuItem = [
 		{
