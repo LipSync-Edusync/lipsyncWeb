@@ -3,7 +3,6 @@
 	import { cn } from '$lib/utils';
 	import { AlignJustify, XIcon } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
-	import { page } from '$app/stores';
 	
 	const navItems = [
 		{ label: 'Features', href: '/features' },

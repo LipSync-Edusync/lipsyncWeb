@@ -30,7 +30,7 @@
 			const { error } = await supabase.auth.signInWithOtp({
 				email: email,
 				options: {
-					shouldCreateUser: false 
+					shouldCreateUser: true 
 				}
 			});
 
@@ -65,6 +65,9 @@
 
 	let loading = false;
 	let isFormLoading = false;
+	let errorMessage: string | null = null;
+	let isResending = false;
+
 	const githubSignIn = async () => {
 		loading = true;
 		const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' });
@@ -77,6 +80,7 @@
 	
 	async function verifyOtp() {
 		isFormLoading = true;
+		errorMessage = null;
 
 		const { data, error } = await supabase.auth.verifyOtp({
 			email,
@@ -87,10 +91,30 @@
 		isFormLoading = false;
 
 		if (error) {
+			errorMessage = error.message;
 			toast.error('OTP verification failed', { description: error.message });
 		} else {
+			errorMessage = null;
 			toast.success('Logged in successfully');
 			// redirect, update session, etc.
+		}
+	}
+
+	async function resendOtp() {
+		isResending = true;
+		errorMessage = null;
+		const { error } = await supabase.auth.signInWithOtp({
+			email,
+			options: {
+				shouldCreateUser: true
+			}
+		});
+		isResending = false;
+		if (error) {
+			errorMessage = error.message;
+			toast.error('Resend OTP failed', { description: error.message });
+		} else {
+			toast.success('OTP resent', { description: 'Check your email for a new OTP.' });
 		}
 	}
 
@@ -135,9 +159,69 @@
 					>
 				</form>
 			{:else if step === 2}
-				<form on:submit|preventDefault={verifyOtp}>
-					<input bind:value={otpCode} type="text" placeholder="Enter OTP" required />
-					<Button type="submit" disabled={isFormLoading}>Verify OTP</Button>
+				<form on:submit|preventDefault={verifyOtp} class="max-w-md mx-auto p-8 rounded-xl shadow-md space-y-6">
+					<div class="relative">
+						<label for="otp-input" class="sr-only">Enter OTP</label>
+						<input
+						id="otp-input"
+						bind:value={otpCode}
+						type="text"
+						inputmode="numeric"
+						pattern="[0-9]*"
+						maxlength="6"
+						placeholder="6-digit OTP"
+						required
+						class="w-full px-4 py-3 text-lg tracking-[0.5em] text-center border-2 border-gray-900 rounded-lg focus:ring-gray-900 focus:border-gray-900 transition-all disabled:bg-gray-900"
+						disabled={isFormLoading}
+						/>
+						{#if isFormLoading}
+						<div class="absolute right-3 top-1/2 -translate-y-1/2">
+							<svg class="w-6 h-6 animate-spin text-gray-900" viewBox="0 0 24 24">
+							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+							</svg>
+						</div>
+						{/if}
+					</div>
+					
+					<button
+						type="submit"
+						disabled={isFormLoading}
+						class="w-full py-3 px-4 bg-gray-900 hover:bg-gray-900 text-white font-semibold rounded-lg transition-colors disabled:bg-gray-900 disabled:cursor-not-allowed"
+					>
+						{#if isFormLoading}
+							<span class="flex items-center justify-center gap-2">
+								<svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+								</svg>
+								Verifying...
+							</span>
+						{:else}
+							Verify OTP
+						{/if}
+					</button>
+					
+					{#if errorMessage}
+						<div role="alert" class="flex items-center gap-2 p-3 text-sm text-red-700 bg-red-100 rounded-lg">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+						</svg>
+						{errorMessage}
+						</div>
+					{/if}
+					
+					<div class="text-sm text-center text-gray-500">
+						Didn't receive code?{' '}
+						<button
+						type="button"
+						on:click={resendOtp}
+						disabled={isResending}
+						class="font-semibold text-blue-500 hover:text-blue-700 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
+						>
+						{isResending ? 'Sending...' : 'Resend OTP'}
+						</button>
+					</div>
 				</form>
 		{/if}
 		<!-- Separator -->
