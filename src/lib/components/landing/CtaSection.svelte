@@ -107,10 +107,10 @@
 						<HeartHandshake class="mx-auto size-16 text-black dark:text-white lg:size-24" />
 					</div>
 					<div class="z-10 mt-4 flex flex-col items-center text-center text-primary">
-						<h1 class="text-3xl font-bold lg:text-4xl">Stop wasting time on design.</h1>
-						<p class="mt-2">Start your 7-day free trial. No credit card required.</p>
-						<Button size="lg" variant="outline" href="#" class="group mt-4 rounded-[2rem] px-6">
-							Get Started
+						<h1 class="text-3xl font-bold lg:text-4xl">Want to Contribute ?</h1>
+						<p class="mt-2">Help us and provide you valuable insights</p>
+						<Button size="lg" variant="outline" href="https://github.com/LipSync-Edusync" class="group mt-4 rounded-[2rem] px-6">
+							github/Lipsync-Edusync
 							<ChevronRight
 								class="ml-1 size-4 transition-all duration-300 ease-out group-hover:translate-x-1"
 							/>

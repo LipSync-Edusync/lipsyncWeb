@@ -25,7 +25,7 @@
 	<meta name="twitter:site" content="@tahmid019" />
 </svelte:head>
 <HeroSection />
-<ClientSection />
+<!-- <ClientSection /> -->
 <SphereMask />
-<PricingSection />
+<!-- <PricingSection /> -->
 <CtaSection />

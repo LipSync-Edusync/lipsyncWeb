@@ -44,8 +44,8 @@
 </script>
 
 <svelte:head>
-	<title>Sign Up | Svee UI</title>
-	<meta name="description" content="Sign Up for Svee UI" />
+	<title>Sign Up | Lipsync</title>
+	<meta name="description" content="Sign Up for Lipsync" />
 </svelte:head>
 
 <div class="container flex h-screen w-screen flex-col items-center justify-center">
@@ -56,7 +56,7 @@
 	<div class="mx-auto flex w-full flex-col justify-center gap-6 sm:w-[350px]">
 		<div class="flex flex-col gap-2 text-center">
 			<!-- {/* <Icons.logo class="mx-auto h-6 w-6" /> */} -->
-			<h1 class="text-2xl font-semibold tracking-tight">Welcome to Svee UI</h1>
+			<h1 class="text-2xl font-semibold tracking-tight">Welcome to Lipsync</h1>
 			<p class="text-sm text-muted-foreground">Sign up for an account</p>
 		</div>
 		<!-- Form -->
