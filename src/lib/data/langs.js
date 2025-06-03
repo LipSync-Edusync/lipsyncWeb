@@ -1,0 +1,1 @@
+export const langs = ['English', 'Hindi', 'Nepali', 'Tamil', 'Telegu', 'Bengali'];
