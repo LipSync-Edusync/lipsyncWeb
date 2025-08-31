@@ -21,7 +21,7 @@
 		class="group inline-flex h-7 -translate-y-4 animate-fade-in items-center justify-between gap-1 rounded-full border border-gray-200 bg-white px-3 text-xs text-gray-900 opacity-0 transition-all ease-in hover:cursor-pointer hover:bg-gray-100"
 	>
 		<AnimatedShinyText class="inline-flex items-center justify-center">
-			<span>✨ Browse the Demos</span>
+			<span>Browse the Demos</span>
 			{' '}
 			<ArrowRightIcon
 				class="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5"

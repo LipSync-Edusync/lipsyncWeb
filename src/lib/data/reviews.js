@@ -1,0 +1,1 @@
+export const reviews = ['Lipsync Quality', 'Audio Quality', 'User Experience', 'Overall'];
